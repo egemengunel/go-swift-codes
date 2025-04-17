@@ -25,7 +25,6 @@ func main() {
 
 	// Set up the router for HTTP endpoints
 	r := mux.NewRouter()
-	// TODO: Register your API routes here
 
 	log.Println("Server is starting on :8080...")
 	if err := http.ListenAndServe(":8080", r); err != nil {

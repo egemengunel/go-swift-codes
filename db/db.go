@@ -28,7 +28,9 @@ func InitDB(dsn string) (*sql.DB, error) {
 		address      TEXT,
 		town_name    TEXT,
 		country_name TEXT,
-		time_zone    TEXT
+		time_zone    TEXT,
+		is_headquarter BOOLEAN,
+    	hq_swift_code  TEXT
 	);`
 	_, err = db.Exec(createTableQuery)
 	if err != nil {
