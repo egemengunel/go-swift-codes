@@ -2,7 +2,11 @@ module swift-codes-project
 
 go 1.24.2
 
-require github.com/xuri/excelize/v2 v2.9.0
+require (
+	github.com/gorilla/mux v1.8.1
+	github.com/mattn/go-sqlite3 v1.14.28
+	github.com/xuri/excelize/v2 v2.9.0
+)
 
 require (
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
