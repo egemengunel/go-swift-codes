@@ -3,7 +3,7 @@ package parser
 import (
 	"database/sql"
 	"fmt"
-
+	"strings"
 	"swift-codes-project/models"
 
 	"github.com/xuri/excelize/v2"
@@ -40,15 +40,22 @@ func ParseExcelAndStore(db *sql.DB, filePath string) error {
 
 		// Map the columns to the SwiftCode model fields.
 		codeEntry := models.SwiftCode{
-			CountryISO2: row[0],
+			CountryISO2: strings.ToUpper(row[0]),
 			SwiftCode:   row[1],
 			CodeType:    row[2],
 			Name:        row[3],
 			Address:     row[4],
 			TownName:    row[5],
-			CountryName: row[6],
+			CountryName: strings.ToUpper(row[6]),
 			TimeZone:    row[7],
 		}
+		isHQ := strings.HasSuffix(codeEntry.SwiftCode, "XXX")
+		hqCode := ""
+		if !isHQ {
+			hqCode = codeEntry.SwiftCode[:8] + "XXX"
+		}
+		codeEntry.IsHeadquarter = isHQ
+		codeEntry.HqSwiftCode = hqCode
 		// Insert the SwiftCode entry into the database.
 		if err := InsertSwiftCode(db, codeEntry); err != nil {
 			return fmt.Errorf("failed to insert data at row %d: %v", i, err)
