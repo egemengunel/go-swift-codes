@@ -12,7 +12,7 @@ import (
 )
 
 // this is returned if the requested code is the branch
-type brachResponsePayload struct {
+type branchResponsePayload struct {
 	Address       string `json:"address"`
 	BankName      string `json:"bankName"`
 	CountryISO2   string `json:"countryISO2"`
@@ -60,7 +60,7 @@ func (httpHandler *SwiftHTTPHandler) GetSwiftCode(
 
 	//case 1, the requested row itself is a branch
 	if !headOfficeRow.IsHeadquarter {
-		branchPayload := brachResponsePayload{
+		branchPayload := branchResponsePayload{
 			Address:       headOfficeRow.Address,
 			BankName:      headOfficeRow.Name,
 			CountryISO2:   headOfficeRow.CountryISO2,
@@ -95,8 +95,8 @@ func (httpHandler *SwiftHTTPHandler) GetSwiftCode(
 
 // GET /v1/swift-codes/country/{iso2}
 
-func (httpHandler *SwiftHTTPHandler) GetCountrySwiftCodes(responseWriter http.ResponseWriter, incomingRequest http.Request) {
-	pathVariables := mux.Vars(&incomingRequest)
+func (httpHandler *SwiftHTTPHandler) GetCountrySwiftCodes(responseWriter http.ResponseWriter, incomingRequest *http.Request) {
+	pathVariables := mux.Vars(incomingRequest)
 	requestedISO2 := strings.ToUpper(pathVariables["iso2"])
 	allRows, queryError :=
 		httpHandler.DataStore.GetCountrySwiftCodes(requestedISO2)
@@ -105,7 +105,7 @@ func (httpHandler *SwiftHTTPHandler) GetCountrySwiftCodes(responseWriter http.Re
 		return
 	}
 
-	var listPayload []brachResponsePayload
+	var listPayload []branchResponsePayload
 	for _, row := range allRows {
 		listPayload = append(listPayload, branchResponsePayload{
 			Address:       row.Address,
