@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"net/http"
 	"strings"
 
@@ -57,4 +58,68 @@ func (httpHandler *SwiftHTTPHandler) GetSwiftCode(
 	responseWriter.Header().Set("Content-Type", "application/json")
 
 	//case 1, the requested row itself is a branch
+	if !headOfficeRow.IsHeadquarter {
+		branchPayload := brachResponsePayload{
+			Address:       headOfficeRow.Address,
+			BankName:      headOfficeRow.Name,
+			CountryISO2:   headOfficeRow.CountryISO2,
+			CountryName:   headOfficeRow.CountryName,
+			IsHeadquarter: false,
+			SwiftCode:     headOfficeRow.SwiftCode,
+		}
+		json.NewEncoder(responseWriter).Encode(branchPayload)
+		return
+	}
+	//case 2 the requested row is a head office
+	headOfficePayload := headOfficeResponsePayload{
+		Address:       headOfficeRow.Address,
+		BankName:      headOfficeRow.Name,
+		CountryISO2:   headOfficeRow.CountryISO2,
+		CountryName:   headOfficeRow.CountryName,
+		IsHeadquarter: true,
+		SwiftCode:     headOfficeRow.SwiftCode,
+	}
+	for _, branchRow := range branchRows {
+		headOfficePayload.Branches = append(headOfficePayload.Branches, branchResponsePayload{
+			Address:       branchRow.Address,
+			BankName:      branchRow.Name,
+			CountryISO2:   branchRow.CountryISO2,
+			CountryName:   branchRow.CountryName,
+			IsHeadquarter: false,
+			SwiftCode:     branchRow.SwiftCode,
+		})
+	}
+	json.NewEncoder(responseWriter).Encode(headOfficePayload)
+}
+
+// GET /v1/swift-codes/country/{iso2}
+
+func (httpHandler *SwiftHTTPHandler) GetCountrySwiftCodes(responseWriter http.ResponseWriter, incomingRequest http.Request) {
+	pathVariables := mux.Vars(&incomingRequest)
+	requestedISO2 := strings.ToUpper(pathVariables["iso2"])
+	allRows, queryError :=
+		httpHandler.DataStore.GetCountrySwiftCodes(requestedISO2)
+	if queryError != nil || len(allRows) == 0 {
+		http.Error(responseWriter, `{"error":"not found"}`, http.StatusNotFound)
+		return
+	}
+
+	var listPayload []brachResponsePayload
+	for _, row := range allRows {
+		listPayload = append(listPayload, branchResponsePayload{
+			Address:       row.Address,
+			BankName:      row.Name,
+			CountryISO2:   row.CountryISO2,
+			CountryName:   row.CountryName,
+			IsHeadquarter: row.IsHeadquarter,
+			SwiftCode:     row.SwiftCode,
+		})
+	}
+	countryPayload := countryResponsePayload{
+		CountryISO2: requestedISO2,
+		CountryName: allRows[0].CountryName,
+		SwiftCodes:  listPayload,
+	}
+	responseWriter.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(responseWriter).Encode(countryPayload)
 }
