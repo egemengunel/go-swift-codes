@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 
+	"swift-codes-project/models"
 	"swift-codes-project/service"
 
 	"github.com/gorilla/mux"
@@ -122,4 +123,43 @@ func (httpHandler *SwiftHTTPHandler) GetCountrySwiftCodes(responseWriter http.Re
 	}
 	responseWriter.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(responseWriter).Encode(countryPayload)
+}
+
+// POST /v1/swift-codes
+func (httpHandler *SwiftHTTPHandler) CreateSwiftCode(
+	responseWriter http.ResponseWriter,
+	incomingRequest *http.Request,
+) {
+	var incomingBody models.SwiftCode
+	if err := json.NewDecoder(incomingRequest.Body).Decode(&incomingBody); err != nil {
+		http.Error(responseWriter, `{"error":"bad json"}`, http.StatusBadRequest)
+		return
+	}
+
+	if err := httpHandler.DataStore.CreateSwiftCode(incomingBody); err != nil {
+		http.Error(responseWriter, `{"error":"cannot insert"}`, http.StatusConflict)
+		return
+	}
+
+	responseWriter.Header().Set("Content-Type", "application/json")
+	responseWriter.WriteHeader(http.StatusCreated)
+	responseWriter.Write([]byte(`{"message":"swift code created"}`))
+}
+
+// DELETE /v1/swift-codes/{code}
+
+func (httpHandler *SwiftHTTPHandler) DeleteSwiftCode(
+	responseWriter http.ResponseWriter,
+	incomingRequest *http.Request,
+) {
+	requestedSwiftCode := strings.ToUpper(mux.Vars(incomingRequest)["code"])
+
+	if err := httpHandler.DataStore.DeleteSwiftCode(requestedSwiftCode); err != nil {
+		http.Error(responseWriter, `{"error":"db failure"}`,
+			http.StatusInternalServerError)
+		return
+	}
+
+	responseWriter.Header().Set("Content-Type", "application/json")
+	responseWriter.Write([]byte(`{"message":"swift code deleted"}`))
 }
