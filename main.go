@@ -29,8 +29,8 @@ func main() {
 	httpHandler := &handler.SwiftHTTPHandler{DataStore: repo}
 	// Set up the router for HTTP endpoints
 	router := mux.NewRouter()
-	router.HandleFunc("/v1/swift-codes/{code}", httpHandler.GetSwiftCode).Methods("GET")
 	router.HandleFunc("/v1/swift-codes/country/{iso2}", httpHandler.GetCountrySwiftCodes).Methods("GET")
+	router.HandleFunc("/v1/swift-codes/{code}", httpHandler.GetSwiftCode).Methods("GET")
 	router.HandleFunc("/v1/swift-codes", httpHandler.CreateSwiftCode).Methods("POST")
 	router.HandleFunc("/v1/swift-codes/{code}", httpHandler.DeleteSwiftCode).Methods("DELETE")
 

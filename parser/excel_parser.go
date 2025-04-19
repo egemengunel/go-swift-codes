@@ -66,18 +66,27 @@ func ParseExcelAndStore(db *sql.DB, filePath string) error {
 
 // InsertSwiftCode is a placeholder function
 func InsertSwiftCode(db *sql.DB, sc models.SwiftCode) error {
-	query := `
-        INSERT INTO swift_codes (country_iso2, swift_code, code_type, name, address, town_name, country_name, time_zone)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
-	_, err := db.Exec(query,
-		sc.CountryISO2,
-		sc.SwiftCode,
-		sc.CodeType,
-		sc.Name,
-		sc.Address,
-		sc.TownName,
-		sc.CountryName,
-		sc.TimeZone,
+	const insertSQL = `
+    INSERT INTO swift_codes (
+        country_iso2, swift_code, code_type, name, address,
+        town_name, country_name, time_zone,
+        is_headquarter, hq_swift_code
+    ) VALUES (
+        ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, ?
+    );`
+
+	_, err := db.Exec(insertSQL,
+		sc.CountryISO2,   // 1
+		sc.SwiftCode,     // 2
+		sc.CodeType,      // 3
+		sc.Name,          // 4
+		sc.Address,       // 5
+		sc.TownName,      // 6
+		sc.CountryName,   // 7
+		sc.TimeZone,      // 8
+		sc.IsHeadquarter, // 9  <- new
+		sc.HqSwiftCode,   // 10 <- new
 	)
 	return err
 }
