@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"swift-codes-project/models"
-	"swift-codes-project/service"
 
 	"github.com/gorilla/mux"
 )
@@ -38,8 +37,15 @@ type countryResponsePayload struct {
 	SwiftCodes  []branchResponsePayload `json:"swiftCodes"`
 }
 
+type SwiftDataStore interface {
+	GetSwiftCode(requestedCode string) (models.SwiftCode, []models.SwiftCode, error)
+	GetCountrySwiftCodes(requestedISO2 string) ([]models.SwiftCode, error)
+	CreateSwiftCode(newEntry models.SwiftCode) error
+	DeleteSwiftCode(codeToDelete string) error
+}
+
 type SwiftHTTPHandler struct {
-	DataStore *service.SwiftRepository
+	DataStore SwiftDataStore
 }
 
 // GET /v1/swift-codes/{code}
