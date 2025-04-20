@@ -9,7 +9,7 @@ A Go-based microservice that imports a spreadsheet of bank SWIFT (BIC) codes int
 3. [Running the Application](#running-the-application)  
 4. [API Endpoints](#api-endpoints)  
 5. [Running Tests](#running-tests)
-6. [Note To Remitly Team](#note-to-remitly-team)
+6. [Note to Remitly Team](#note-to-remitly-team)
 
 ---
 
@@ -215,7 +215,7 @@ go test ./...
 ```
 
 ---
-## Note to the Remitly Team
+## Note to Remitly Team
 
 Thank you for reviewing my submission! A few personal notes:
 
