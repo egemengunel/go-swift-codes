@@ -9,6 +9,7 @@ A Go-based microservice that imports a spreadsheet of bank SWIFT (BIC) codes int
 3. [Running the Application](#running-the-application)  
 4. [API Endpoints](#api-endpoints)  
 5. [Running Tests](#running-tests)
+6. [Note To Remitly Team](#note-to-remitly-team)
 
 ---
 
@@ -17,7 +18,7 @@ A Go-based microservice that imports a spreadsheet of bank SWIFT (BIC) codes int
 - **Go** ≥ 1.22 installed and in your `PATH`  
 - **SQLite** CLI (optional, for manual DB inspection)  
 - **Git** (to clone the repository)  
-- **curl** or **Postman** (to exercise the API)  
+- **curl** or **Postman** or a **browser** (to exercise the API)  
 
 ---
 
@@ -50,6 +51,7 @@ Follow these steps to prepare your environment and get the project running:
    ```
 
 5. **The spreadsheet file is already present in the root**
+
    The `data/SWIFT_CODES.xlsx` excel data file already exists in the project root. So do not add the excel file to the project root again.
 
 ---
@@ -211,5 +213,18 @@ Or run **all** at once:
 ```bash
 go test ./...
 ```
+
+---
+## Note to the Remitly Team
+
+Thank you for reviewing my submission! A few personal notes:
+
+- I am primarily an **iOS/Swift** developer and this was my **first time working with Go**.
+- I focused on clear, idiomatic Go code while ensuring I could meet all of the exercise requirements.
+- I have tried learn and understand Go and its syntax as much as i can in the limited amount of time to reduce my reliance on AI Tools for coding.
+- Writing unit tests and HTTP handler tests in Go was a new challenge, and I learned a lot about interfaces, dependency injection, REST API's and testing with `httptest`.
+- I appreciate your patience and hope this solution demonstrates my ability to learn new technologies quickly.
+
+Thank you for your time and consideration!
 
 ---
